@@ -72,7 +72,8 @@ pub fn maybe_route_mutation(
             Ok(()) => Ok(true),
             // Some constrained sandboxes disallow AF_UNIX sockets. Fall back to direct path.
             Err(error::DecapodError::IoError(io_err))
-                if io_err.kind() == std::io::ErrorKind::PermissionDenied =>
+                if io_err.kind() == std::io::ErrorKind::PermissionDenied
+                    || io_err.kind() == std::io::ErrorKind::InvalidInput =>
             {
                 Ok(false)
             }
