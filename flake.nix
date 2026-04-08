@@ -52,6 +52,10 @@
             sqlite
           ];
 
+          nativeCheckInputs = with pkgs; [
+            git
+          ];
+
           meta = {
             description = "Daemonless, local-first control plane for multi-agent work";
             homepage = "https://github.com/DecapodLabs/decapod";
