@@ -1,5 +1,5 @@
 {
-  description = "Optional development shell for Decapod; not required to build or run the decapod binary";
+  description = "Decapod: daemonless, local-first control plane for multi-agent work";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
@@ -32,6 +32,34 @@
         };
       in
       {
+        packages.default = pkgs.rustPlatform.buildRustPackage {
+          pname = "decapod";
+          version =
+            let
+              cargoToml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
+            in
+            cargoToml.package.version;
+
+          src = pkgs.lib.cleanSource ./.;
+
+          cargoLock.lockFile = ./Cargo.lock;
+
+          nativeBuildInputs = with pkgs; [
+            pkg-config
+          ];
+
+          buildInputs = with pkgs; [
+            sqlite
+          ];
+
+          meta = {
+            description = "Daemonless, local-first control plane for multi-agent work";
+            homepage = "https://github.com/DecapodLabs/decapod";
+            license = pkgs.lib.licenses.mit;
+            mainProgram = "decapod";
+          };
+        };
+
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             clang

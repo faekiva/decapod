@@ -64,6 +64,7 @@ dev/
 *.pat
 *.token
 *.key
+.direnv
 
 # --- Temp / Debug ---
 *.log
