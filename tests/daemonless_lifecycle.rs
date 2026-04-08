@@ -2,6 +2,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
+use sysinfo::System;
 use tempfile::TempDir;
 
 fn run_decapod(dir: &Path, args: &[&str]) -> std::process::Output {
@@ -34,25 +35,19 @@ fn setup_repo() -> (TempDir, PathBuf) {
 }
 
 fn running_decapod_pids(exe_path: &str) -> Vec<u32> {
-    let out = Command::new("ps")
-        .args(["-eo", "pid=,args="])
-        .output()
-        .expect("ps output");
-    assert!(out.status.success(), "ps command failed");
-    let text = String::from_utf8_lossy(&out.stdout);
-    text.lines()
-        .filter_map(|line| {
-            let trimmed = line.trim();
-            let mut parts = trimmed.split_whitespace();
-            let pid = parts.next()?.parse::<u32>().ok()?;
-            let args = parts.collect::<Vec<_>>().join(" ");
-            if args.contains(exe_path) {
-                Some(pid)
-            } else {
-                None
-            }
+    let mut sys = System::new();
+    sys.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
+    let mut pids: Vec<u32> = sys
+        .processes()
+        .values()
+        .filter(|proc| {
+            let cmd = proc.cmd().iter().map(|s| s.to_string_lossy()).collect::<Vec<_>>().join(" ");
+            cmd.contains(exe_path)
         })
-        .collect()
+        .map(|proc| proc.pid().as_u32())
+        .collect();
+    pids.sort();
+    pids
 }
 
 #[test]
