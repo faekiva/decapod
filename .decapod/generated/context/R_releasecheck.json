@@ -20,6 +20,10 @@
     {
       "path": "interfaces/STORE_MODEL.md",
       "section": "2. Assets (What We Protect)"
+    },
+    {
+      "path": "interfaces/CONTROL_PLANE.md",
+      "section": "6. Validate Doctrine (Proof Currency)"
     }
   ],
   "snippets": [
@@ -38,6 +42,10 @@
     {
       "source_path": "interfaces/STORE_MODEL.md",
       "text": "## 2. Assets (What We Protect)\n\n- user store privacy: a user starts blank and should not inherit repo ideology or backlog\n- repo store reproducibility: repo state should be deterministically rebuildable from repo-tracked artifacts where declared\n- derived state integrity: derived artifacts should never be treated as source-of-truth\n- provenance: every mutation should be attributable to an actor and a store context (planned: audit trail)\n\n---"
+    },
+    {
+      "source_path": "interfaces/CONTROL_PLANE.md",
+      "text": "## 6. Validate Doctrine (Proof Currency)\n\nAgents should treat proof as the control plane's currency:\n\n- if validation exists, run it\n- if validation doesn't exist, add the smallest validation gate that prevents drift\n- if something is claimed in docs, validation should be able to detect it\n\nThis is how the repo avoids \"doc reality\" diverging from \"code reality.\"\n\nValidate taxonomy (intended):"
     }
   ],
   "policy": {
@@ -47,5 +55,5 @@
     "policy_path": "",
     "repo_revision": ""
   },
-  "capsule_hash": "b6f1500dfc743ac3a104c905a041bd165ea8cf6c31efd152a2ebcef3da217934"
+  "capsule_hash": "ae7a6d11033a9f6882f0abc2834e4712ead0e5e842e346a18bde564279ff6ad0"
 }
