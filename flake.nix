@@ -54,7 +54,13 @@
 
           nativeCheckInputs = with pkgs; [
             git
+          ] ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+            procps
           ];
+
+          preCheck = pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
+            export PATH="/bin:$PATH"
+          '';
 
           meta = {
             description = "Daemonless, local-first control plane for multi-agent work";
