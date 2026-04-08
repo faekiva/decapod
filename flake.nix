@@ -4,10 +4,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs =
@@ -33,20 +30,6 @@
             "rustfmt"
           ];
         };
-        # Precise source filtering — only include files needed for the build.
-        # Avoids store churn from docs, fixtures, assets, and .decapod state.
-        src = pkgs.lib.fileset.toSource {
-          root = ./.;
-          fileset = pkgs.lib.fileset.intersection (pkgs.lib.fileset.gitTracked ./.) (
-            pkgs.lib.fileset.unions [
-              ./Cargo.toml
-              ./Cargo.lock
-              ./src
-              ./build
-              ./.cargo
-            ]
-          );
-        };
       in
       {
         packages.default = pkgs.rustPlatform.buildRustPackage {
@@ -57,7 +40,7 @@
             in
             cargoToml.package.version;
 
-          inherit src;
+          src = pkgs.lib.cleanSource ./.;
 
           cargoLock.lockFile = ./Cargo.lock;
 
@@ -91,6 +74,7 @@
 
           shellHook = ''
             export CARGO_TERM_COLOR=always
+            export CARGO_INCREMENTAL=0
             export CARGO_NET_RETRY=10
             export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath runtimeLibs}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
